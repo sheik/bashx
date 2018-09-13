@@ -27,21 +27,21 @@ func execProgram(cmds pipedCommands) error {
 	var command *exec.Cmd
 	var err error
 	var wg sync.WaitGroup
-	var next_stdin io.Reader
+	var nextStdin io.Reader
 
-	first_command := true
+	firstCommand := true
 	for _, cmd := range cmds {
 		if len(cmd) == 0 {
 			continue
 		}
 		command = exec.Command(cmd[0], cmd[1:]...)
-		if first_command {
+		if firstCommand {
 			command.Stdin = os.Stdin
-			first_command = false
+			firstCommand = false
 		} else {
-			command.Stdin = next_stdin
+			command.Stdin = nextStdin
 		}
-		next_stdin, err = command.StdoutPipe()
+		nextStdin, err = command.StdoutPipe()
 		if err != nil {
 			panic(err)
 		}
